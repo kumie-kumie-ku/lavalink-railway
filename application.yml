@@ -78,3 +78,15 @@ plugins:
 
 
 metrics:
+  prometheus:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
+    lavalink: INFO
+
+
+
+
+
