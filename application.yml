@@ -1,0 +1,61 @@
+# Lavalink 4.x — application.yml for the Altare Docker App deploy.
+#
+# Image: ghcr.io/lavalink-devs/lavalink:4.2.2  (4.2+ is required: Discord's
+# DAVE encrypted voice landed March 2026 and older Lavalink cannot play.)
+# Mount this file at /opt/Lavalink/application.yml and set the
+# LAVALINK_PASSWORD env var on the Docker App. Do NOT put a real password
+# in this file.
+#
+# Sources: Lavalink 4 docs + youtube-source plugin README
+# (dev.lavalink.youtube:youtube-plugin). The built-in YouTube source MUST
+# stay off — the plugin replaces it.
+
+server:
+  port: 2333
+  address: 0.0.0.0
+
+lavalink:
+  plugins:
+    # Pin to the latest youtube-plugin release at deploy time; 1.18.2 was
+    # current when this file was written.
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.2"
+      snapshot: false
+  server:
+    password: "${LAVALINK_PASSWORD}"
+    sources:
+      youtube: false # handled by the youtube-source plugin, not the built-in
+      soundcloud: true
+      bandcamp: true
+      twitch: true
+      vimeo: true
+      http: true
+      local: false
+    filters:
+      volume: true
+      equalizer: true
+    bufferDurationMs: 400
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+    gc-warnings: true
+
+plugins:
+  youtube:
+    enabled: true
+    allowSearch: true
+    allowDirectVideoIds: true
+    allowDirectPlaylistIds: true
+    # If YouTube starts blocking the node, add InnerTube OAuth tokens from
+    # a THROWAWAY Google account here (never Kumie's real account, never in
+    # chat — vaulted like any other credential). See the youtube-source
+    # README section "Using OAuth tokens".
+
+metrics:
+  prometheus:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
+    lavalink: INFO
