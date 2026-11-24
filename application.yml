@@ -46,6 +46,16 @@ plugins:
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
+    # OAuth test 2026-11-24: enabled with NO refresh token yet. On restart
+    # Lavalink logs a google.com/device code; sign in with the THROWAWAY
+    # Google account, enter the code, and Lavalink logs a refresh token.
+    # Save that token as Railway variable PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN
+    # (Spring relaxed binding maps it to plugins.youtube.oauth.refreshToken)
+    # so later restarts skip the device flow. Burner account only — Google
+    # may ban accounts used for this.
+    oauth:
+      enabled: true
+      # refreshToken: "${PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN:}"
     # If YouTube starts blocking the node, add InnerTube OAuth tokens from
     # a THROWAWAY Google account here (never Kumie's real account, never in
     # chat — vaulted like any other credential). See the youtube-source
