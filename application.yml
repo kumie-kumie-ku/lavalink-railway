@@ -10,11 +10,9 @@
 # (dev.lavalink.youtube:youtube-plugin). The built-in YouTube source MUST
 # stay off — the plugin replaces it.
 
-
 server:
   port: 2333
   address: 0.0.0.0
-
 
 lavalink:
   plugins:
@@ -42,7 +40,6 @@ lavalink:
     soundcloudSearchEnabled: true
     gc-warnings: true
 
-
 plugins:
   youtube:
     enabled: true
@@ -50,24 +47,29 @@ plugins:
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
     # Clients are queried in the order given; the first that loads wins.
-    # TV is LAST on purpose: the anonymous clients handle everything they
-    # can, and TV (the only OAuth-compatible client — it does playback
-    # only, no metadata/search) is only tried when the others refuse a
-    # video. Without TV in this list the OAuth login is never used for
-    # playback — Lavalink even warns "OAuth has been enabled without
-    # registering any OAuth-compatible clients" — and login-gated videos
-    # fail on every client. Added 2026-11-24 after !play freak kept
-    # failing with "This video requires login" despite a saved token.
+    # TV and TVHTML5EMBEDDED are LAST on purpose: the anonymous clients
+    # handle everything they can, and the TV clients (the only
+    # OAuth-compatible ones — they do playback only, no metadata/search)
+    # are only tried when the others refuse a video. Without a TV client
+    # in this list the OAuth login is never used for playback — Lavalink
+    # even warns "OAuth has been enabled without registering any
+    # OAuth-compatible clients" — and login-gated videos fail on every
+    # client. TV added 2026-11-24 after !play freak kept failing with
+    # "This video requires login" despite a saved token;
+    # TVHTML5EMBEDDED added the same day (the README's other OAuth
+    # client, never tried) for the return-to-Lavalink test.
     clients:
       - MUSIC
       - ANDROID_VR
       - WEB
       - WEBEMBEDDED
       - TV
-    # OAuth: refresh token saved 2026-11-24 ~01:54 as Railway variable
-    # PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN (Spring relaxed binding maps it
-    # to plugins.youtube.oauth.refreshToken) so restarts skip the device
-    # flow. Burner account only — Google may ban accounts used for this.
+      - TVHTML5EMBEDDED
+    # OAuth test 2026-11-24: enabled; refresh token saved 2026-11-24
+    # ~01:54 as Railway variable PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN
+    # (Spring relaxed binding maps it to plugins.youtube.oauth.refreshToken)
+    # so restarts skip the device flow. Burner account only — Google
+    # may ban accounts used for this.
     oauth:
       enabled: true
       # refreshToken: "${PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN:}"
@@ -75,7 +77,6 @@ plugins:
     # a THROWAWAY Google account here (never Kumie's real account, never in
     # chat — vaulted like any other credential). See the youtube-source
     # README section "Using OAuth tokens".
-
 
 metrics:
   prometheus:
@@ -85,8 +86,3 @@ logging:
   level:
     root: INFO
     lavalink: INFO
-
-
-
-
-
