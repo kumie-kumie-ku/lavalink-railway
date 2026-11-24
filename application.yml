@@ -10,9 +10,11 @@
 # (dev.lavalink.youtube:youtube-plugin). The built-in YouTube source MUST
 # stay off — the plugin replaces it.
 
+
 server:
   port: 2333
   address: 0.0.0.0
+
 
 lavalink:
   plugins:
@@ -40,19 +42,32 @@ lavalink:
     soundcloudSearchEnabled: true
     gc-warnings: true
 
+
 plugins:
   youtube:
     enabled: true
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
-    # OAuth test 2026-11-24: enabled with NO refresh token yet. On restart
-    # Lavalink logs a google.com/device code; sign in with the THROWAWAY
-    # Google account, enter the code, and Lavalink logs a refresh token.
-    # Save that token as Railway variable PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN
-    # (Spring relaxed binding maps it to plugins.youtube.oauth.refreshToken)
-    # so later restarts skip the device flow. Burner account only — Google
-    # may ban accounts used for this.
+    # Clients are queried in the order given; the first that loads wins.
+    # TV is LAST on purpose: the anonymous clients handle everything they
+    # can, and TV (the only OAuth-compatible client — it does playback
+    # only, no metadata/search) is only tried when the others refuse a
+    # video. Without TV in this list the OAuth login is never used for
+    # playback — Lavalink even warns "OAuth has been enabled without
+    # registering any OAuth-compatible clients" — and login-gated videos
+    # fail on every client. Added 2026-11-24 after !play freak kept
+    # failing with "This video requires login" despite a saved token.
+    clients:
+      - MUSIC
+      - ANDROID_VR
+      - WEB
+      - WEBEMBEDDED
+      - TV
+    # OAuth: refresh token saved 2026-11-24 ~01:54 as Railway variable
+    # PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN (Spring relaxed binding maps it
+    # to plugins.youtube.oauth.refreshToken) so restarts skip the device
+    # flow. Burner account only — Google may ban accounts used for this.
     oauth:
       enabled: true
       # refreshToken: "${PLUGINS_YOUTUBE_OAUTH_REFRESHTOKEN:}"
@@ -61,11 +76,5 @@ plugins:
     # chat — vaulted like any other credential). See the youtube-source
     # README section "Using OAuth tokens".
 
-metrics:
-  prometheus:
-    enabled: false
 
-logging:
-  level:
-    root: INFO
-    lavalink: INFO
+metrics:
